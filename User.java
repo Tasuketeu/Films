@@ -8,6 +8,7 @@ public class User {
 
     Map<String,User> users= new LinkedHashMap<>();
     static Map<String, String> map = new LinkedHashMap<>();
+    static Map<String, String> mapUserLogin = new LinkedHashMap<>();
     static int NameId=0;
     static int LoginId=10000;
     static int PasswordId=100000000;
@@ -17,7 +18,9 @@ public class User {
 
     Review review=new Review();
     ContainUsers containUsers=new ContainUsers();
-
+    public Map getMapUserLogin(){
+        return mapUserLogin;
+    }
     public Map MapUsers(String regname, String reglogin, String regpassword) {
         NameId++;LoginId++;PasswordId++;
         map.put(Integer.toString(NameId), regname);
@@ -34,6 +37,7 @@ public class User {
                 containUsers.usersList(user);
                 users = user.MapUsers(regname, reglogin, regpassword);
                 users.put(reglogin, user);
+                mapUserLogin.put(reglogin,user.toString());
             }
     }
 
@@ -62,9 +66,11 @@ public class User {
                                 System.out.println("Вы вошли в систему!");
                                 review.setActiveUser(i);
                                 InSystem();
+                                return;
                             }
                             else {
                                 System.out.println("Неверно введённые данные!");
+                                return;
                             }
                                                         }
                     }

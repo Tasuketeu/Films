@@ -14,7 +14,15 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
 
-        System.out.println("Введите команду:");
+        System.out.println("Введите команду" +
+                "register -- регистрация" +
+                "login -- логин" +
+                "search -- поиск фильма" +
+                "logout -- выход из аккаунта" +
+                "addreview -- добавить отзыв" +
+                "deletereview -- удалить отзыв(пока не работает)" +
+                "detail -- ???????" +
+                "exit -- выход из программы:");
         List<String> CommandList=new ArrayList<String>();
         CommandList.add("register");
         CommandList.add("login");
@@ -37,19 +45,27 @@ public class Main {
                 }
                 if (commands.equals("search")) {
                         System.out.println("Поиск фильмов:");
-                        String search = sc.next();
-                        movie.getFilms(search);
+                        movie.getFilmInfo(sc.next());
+                        commands=sc.next();
+                    if(commands.equals("details"))
+                    {
+                        movie.getMovieDetails();
+                    }
                 }
                 if (commands.equals("deletereview")) {
 
                 }
                 if(!User.adminMode) {
                     if (commands.equals("addreview")) {
-                        System.out.println("Напишите обзор:");
-                        review.addReview(sc.next());
+                        System.out.println("Введите название фильма, на который хотите написать обзор:");
+                        commands=sc.next();
+                        if(movie.searchFilm(commands))
+                        {
+                            review.addReview(sc.next(),commands);
+                        }
                     }
-                    if (commands.equals("detail")) {
-                        review.getMyReviews();
+                    if (commands.equals("myReviews")) {
+                        //review.getMyReviews();
                     }
                 }
             }
