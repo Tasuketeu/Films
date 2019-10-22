@@ -2,22 +2,14 @@ package com.company.base.accenture.films;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class Review {
     static String userId;
     static Map<Integer, String> map = new LinkedHashMap<>();
 
     static Map<Map,String> mapToImdb= new LinkedHashMap<>();
-    static int reviewId=0;
-    ContainUsers containUsers=new ContainUsers();
 
-
-//    public Map mapUsersReviews(String review) {
-//        reviewId++;
-//        map.put(reviewId,review);
-//        return map;
-//    }
+    static String login=null;
 
     public void setActiveUser(Object activeUser) {
         userId=activeUser.toString();
@@ -26,7 +18,6 @@ public class Review {
     public void addReview(String review,String movie) {
         User user = new User();
         Map<String, String> mapUserLogin = user.getMapUserLogin();
-        String login=null;
 
         for (Map.Entry<String, String> entry : mapUserLogin.entrySet()) {
                     if (entry.getValue().equals(userId)) {
@@ -40,7 +31,6 @@ public class Review {
         Map<String,String> reviews= new LinkedHashMap<>();
 
         Map<Map,String> mapToReview= new LinkedHashMap<>();
-        //reviews = newReview.mapUsersReviews(review);
         reviews.put(newReview.toString(), login);
         String imdb=newMovie.getImdb(movie);
         mapToReview.put(reviews,review);
@@ -49,20 +39,58 @@ public class Review {
         System.out.println(mapToReview);
         System.out.println(mapToImdb);
     }
-//    public void getMyReviews() {
-//        for (Map.Entry<String,String> entry : reviews.entrySet()) {
-//            if (entry.getValue().equals(userId)) {
-//                System.out.println(entry.getKey());
-//            }
-//        }
-//    }
-//    public Map getReviews(){
-//        return reviews;
-//    }
+    public void deleteReview(String movie) {
+
+        Map<Map, String> mapToReview;
+        Map<String, String> mapReviews;
+        User user = new User();
+        Movie newMovie = new Movie();
+        String imdb = newMovie.getImdb(movie);
+        Map<String, String> mapUserLogin = user.getMapUserLogin();
+
+        for (Map.Entry<Map, String> entry : mapToImdb.entrySet()) {
+            if (entry.getValue().equals(imdb)) {
+                mapToReview = entry.getKey();
+                for (Map.Entry<Map, String> entry2 : mapToReview.entrySet()) {
+                    mapReviews = entry2.getKey();
+                    for (Map.Entry<String, String> entry3 : mapReviews.entrySet()) {
+                        if (entry3.getValue().equals(login)) {
+                            mapToImdb.remove(entry.getKey());
+                            System.out.println(mapToImdb.entrySet());
+                        }
+                    }
+                }
+            }
+        }
+    }
+        public void editReview(String review,String movie) {
+
+            Map<Map, String> mapToReview;
+            Map<String, String> mapReviews;
+            User user = new User();
+            Movie newMovie = new Movie();
+            String imdb = newMovie.getImdb(movie);
+            Map<String, String> mapUserLogin = user.getMapUserLogin();
+
+            for (Map.Entry<Map, String> entry : mapToImdb.entrySet()) {
+                if (entry.getValue().equals(imdb)) {
+                    mapToReview = entry.getKey();
+                    for (Map.Entry<Map, String> entry2 : mapToReview.entrySet()) {
+                        mapReviews = entry2.getKey();
+                        for (Map.Entry<String, String> entry3 : mapReviews.entrySet()) {
+                            if (entry3.getValue().equals(login)) {
+                                mapToReview.replace(mapReviews,review);
+                                System.out.println(mapToReview.entrySet());
+                                System.out.println(mapToImdb.entrySet());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     public Map getMapToImdb(){
         return mapToImdb;
     }
-//    public Map getMapToReview(){
-//        return mapToReview;
-//    }
+
 }

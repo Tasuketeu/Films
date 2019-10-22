@@ -9,20 +9,20 @@ public class Main {
         User user=new User();
         Review review=new Review();
         String notInSystem = "Вы не в системе";
-        String inSystem = "Вы вошли в систему";
         System.out.println(notInSystem);
         Scanner sc = new Scanner(System.in);
 
 
-        System.out.println("Введите команду" +
-                "register -- регистрация" +
-                "login -- логин" +
-                "search -- поиск фильма" +
-                "logout -- выход из аккаунта" +
-                "addreview -- добавить отзыв" +
-                "deletereview -- удалить отзыв(пока не работает)" +
-                "detail -- ???????" +
-                "exit -- выход из программы:");
+        System.out.println("Введите команду\n" +
+                "register -- регистрация\n" +
+                "login -- логин\n" +
+                "search -- поиск фильма\n" +
+                "logout -- выход из аккаунта\n" +
+                "addReview -- добавить отзыв\n" +
+                "deleteReview -- удалить отзыв(пока доступно только для пользователей)\n" +
+                "detail -- ???????\n" +
+                "exit -- выход из программы" +
+                "editReview -- редактировать отзыв(пока доступно только для пользователей):");
         List<String> CommandList=new ArrayList<String>();
         CommandList.add("register");
         CommandList.add("login");
@@ -52,20 +52,40 @@ public class Main {
                         movie.getMovieDetails();
                     }
                 }
-                if (commands.equals("deletereview")) {
-
+                if (commands.equals("deleteReview")) {
+                    System.out.println("Введите название фильма, на который вы написали обзор и хотите удалить:");
+                    commands=sc.next();
+                    if(movie.searchFilmToReview(commands))
+                    {
+                        review.deleteReview(commands);
+                    }
                 }
                 if(!User.adminMode) {
-                    if (commands.equals("addreview")) {
+                    if (commands.equals("addReview")) {
                         System.out.println("Введите название фильма, на который хотите написать обзор:");
                         commands=sc.next();
-                        if(movie.searchFilm(commands))
+                        if(movie.searchFilmToReview(commands))
                         {
+                            System.out.println("Фильм найден! Напишите отзыв:");
                             review.addReview(sc.next(),commands);
                         }
                     }
                     if (commands.equals("myReviews")) {
                         //review.getMyReviews();
+                    }
+                    if (commands.equals("editReview")) {
+                        if(User.adminMode) {
+                            System.out.println("Введите название фильма, который хотите отредактировать:");
+                        }
+                        else{
+                            System.out.println("Введите название фильма, на который вы написали обзор и хотите отредактировать:");
+                        }
+                        commands=sc.next();
+                        if(movie.searchFilmToReview(commands))
+                        {
+                            System.out.println("Фильм найден! Отредактируйте отзыв:");
+                            review.editReview(sc.next(),commands);
+                        }
                     }
                 }
             }
@@ -95,7 +115,4 @@ public class Main {
         }
 
     }
-
-
-
 }

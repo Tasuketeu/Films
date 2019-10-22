@@ -1,11 +1,19 @@
 package com.company.base.accenture.films;
 
-import java.util.Date;
 import java.util.Map;
 
 public class Movie {
-    public static boolean searchFilm(String search) {
-            return true;
+    public static boolean searchFilmToReview(String search) {
+        ContainMovies containMovies = new ContainMovies();
+        containMovies.mapMovies();
+        containMovies.moviesList();
+
+        for (int i = 0; i < 5; i++) {
+            if (search.equals(containMovies.imdb.get(i)) || search.equals(containMovies.title.get(i)) || search.equals(containMovies.date.get(i))) {
+                return true;
+            }
+        }
+        return false;
     }
     public String getImdb(String search) {
         ContainMovies containMovies=new ContainMovies();
@@ -18,19 +26,14 @@ public class Movie {
             }
         return "";
     }
-
     public static void getFilmInfo(String search) {
         ContainMovies containMovies = new ContainMovies();
         containMovies.mapMovies();
         containMovies.moviesList();
         Review review = new Review();
         Map<Map, String> reviewMap = review.getMapToImdb();
-        //Map<String,String> reviews1=review.getReviews();
-        Map<String, String> movies = containMovies.moviesList();
-        Map<Map, String> mapToReview = null;
-        Map<Map, String> mapToReview2 = null;
-        Map<String, String> mapReviews = null;
-        Map<String, String> reviews = null;
+        Map<Map, String> mapToReview;
+        Map<String, String> mapReviews;
 
         for (int i = 0; i < 5; i++) {
             if (search.equals(containMovies.imdb.get(i)) || search.equals(containMovies.title.get(i)) || search.equals(containMovies.date.get(i))) {
@@ -61,27 +64,5 @@ public class Movie {
         }
     }
     public static void getMovieDetails(){
-                System.out.println();
-                System.out.println();
-                System.out.println();
-                System.out.println();
-                System.out.println();
-                System.out.println();
-                System.out.println();
-                //System.out.println(review);
     }
-//    public static String Imdb(String imdb) {
-//        List<String> ids = new ArrayList<>();
-//        ids.add("0133093");
-//        ids.add("0088763");
-//        ids.add("0068646");
-//        ids.add("0078748");
-//        ids.add("0088247");
-//        for (int i = 0; i < 5; i++) {
-//            if (imdb.equals(ids.get(i))) {
-//                System.out.println("rgargare");
-//            }
-//        }
-//        return imdb;
-//    }
 }

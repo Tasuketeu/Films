@@ -63,19 +63,6 @@ public class ContainMovies {
 
     public Map moviesList()
     {
-        Review review=new Review();
-        //Map<String,String> reviewMap=review.getMapToImdb();
-        //ContainMovies containMovies=new ContainMovies();
-        //movies = containMovies.mapMovies();
-//        if(!reviewMap.entrySet().isEmpty()) {
-//            for (Map.Entry<String, String> entry : reviewMap.entrySet()) {
-//                movies.put(entry.getKey(), imdb.get(0));
-//                movies.put(entry.getValue(), imdb.get(0));
-//                System.out.println(entry.getKey());
-//                System.out.println(entry.getValue());
-//            }
-//        }
-        //movies.put(review.getReviews()., imdb.get(0));
         return movies;
     }
 
