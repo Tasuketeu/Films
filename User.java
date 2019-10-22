@@ -10,20 +10,21 @@ public class User {
     static int NameId=0;
     static int LoginId=10000;
     static int PasswordId=100000000;
+    static int userId=0;
     static boolean inSystem=false;
-    static boolean adminMode=false;
-
+    static boolean adminMode;
 
     Review review=new Review();
     ContainUsers containUsers=new ContainUsers();
+
     public Map getMapUserLogin(){
         return mapUserLogin;
     }
     public Map MapUsers(String regname, String reglogin, String regpassword) {
+            map.put(Integer.toString(NameId), regname);
+            map.put(Integer.toString(LoginId), reglogin);
+            map.put(Integer.toString(PasswordId), regpassword);
         NameId++;LoginId++;PasswordId++;
-        map.put(Integer.toString(NameId), regname);
-        map.put(Integer.toString(LoginId), reglogin);
-        map.put(Integer.toString(PasswordId), regpassword);
         return map;
     }
 
@@ -43,19 +44,20 @@ public class User {
         int NameId1      =0;
         int LoginId1     =10000;
         int PasswordId1  =100000000;
-        if(logname=="admin"&&
-                loglogin=="admin"&&
-                logpassword=="admin"
+
+
+        if(logname.equals("admin")&&
+                loglogin.equals("admin")&&
+                logpassword.equals("admin")
         )
         {
             adminMode=true;
         }
+
             if(users.containsKey(loglogin)) {
                 for (Object i:containUsers.getUsersList()) {
-                    NameId1++;
-                    LoginId1++;
-                    PasswordId1++;
                     if (users.get(loglogin).equals(i)) {
+
                             if (map.get(Integer.toString(NameId1)).equals(logname)&&
                             map.get(Integer.toString(LoginId1)).equals(loglogin)&&
                             map.get(Integer.toString(PasswordId1)).equals(logpassword)
@@ -71,6 +73,10 @@ public class User {
                                 return;
                             }
                                                         }
+
+                    NameId1++;
+                    LoginId1++;
+                    PasswordId1++;
                     }
                     }
             else{
@@ -87,8 +93,10 @@ public class User {
         inSystem=true;
         return inSystem;
     }
-    public static boolean adminLogout() {
-        adminMode=false;
+    public boolean getAdminLogin() {
         return adminMode;
+    }
+    public void setAdminLogin(boolean adminMode) {
+        this.adminMode=adminMode;
     }
 }

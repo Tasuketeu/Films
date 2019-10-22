@@ -1,6 +1,11 @@
 package com.company.base.accenture.films;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Movie {
     public static boolean searchFilmToReview(String search) {
@@ -32,9 +37,9 @@ public class Movie {
         containMovies.moviesList();
         Review review = new Review();
         Map<Map, String> reviewMap = review.getMapToImdb();
-        Map<Map, String> mapToReview;
+        Map<Map, List> mapToReview;
         Map<String, String> mapReviews;
-
+        List<Integer> dateReviewRating;
         for (int i = 0; i < 5; i++) {
             if (search.equals(containMovies.imdb.get(i)) || search.equals(containMovies.title.get(i)) || search.equals(containMovies.date.get(i))) {
                 System.out.println("Фильм найден");
@@ -49,11 +54,17 @@ public class Movie {
                     for (Map.Entry<Map, String> entry : reviewMap.entrySet()) {
                         if (entry.getValue().equals(containMovies.imdb.get(i))) {
                             mapToReview = entry.getKey();
-                            for (Map.Entry<Map, String> entry2 : mapToReview.entrySet()) {
+                            for (Map.Entry<Map, List> entry2 : mapToReview.entrySet()) {
+
+                                dateReviewRating = entry2.getValue();
                                 mapReviews = entry2.getKey();
                                 for (Map.Entry<String, String> entry3 : mapReviews.entrySet()) {
+                                    System.out.println(dateReviewRating.get(0)); //date
+
                                     System.out.println(entry3.getValue()); //login
-                                    System.out.println(entry2.getValue()); //review
+                                    System.out.println(dateReviewRating.get(1)); //review
+
+                                    System.out.println(dateReviewRating.get(2)); //rating
                                 }
                             }
                         }
