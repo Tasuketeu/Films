@@ -1,5 +1,6 @@
 package com.company.base.accenture.films;
 
+import java.time.LocalDate;
 import java.util.*;
 
 public class Review {
@@ -9,13 +10,13 @@ public class Review {
 
     static String login=null;
 
-    public void setActiveUser(Object activeUser) {
+    public static void setActiveUser(Object activeUser) {
         userId=activeUser.toString();
     }
 
     public void addReview(String review,String rating,String movie) {
         User user = new User();
-        Date date=new Date();
+        LocalDate date = LocalDate.now();
         List<String> dateReviewRating=new ArrayList<>();
         dateReviewRating.add(date.toString());
         dateReviewRating.add(review);
@@ -70,7 +71,7 @@ public class Review {
     }
     public void deleteReviewByAdmin(String movie,String login) {
 
-        Map<Map, String> mapToReview;
+        Map<Map, List> mapToReview;
         Map<String, String> mapReviews;
         User user = new User();
         Movie newMovie = new Movie();
@@ -80,7 +81,7 @@ public class Review {
         for (Map.Entry<Map, String> entry : mapToImdb.entrySet()) {
             if (entry.getValue().equals(imdb)) {
                 mapToReview = entry.getKey();
-                for (Map.Entry<Map, String> entry2 : mapToReview.entrySet()) {
+                for (Map.Entry<Map, List> entry2 : mapToReview.entrySet()) {
                     mapReviews = entry2.getKey();
                     for (Map.Entry<String, String> entry3 : mapReviews.entrySet()) {
                         if (entry3.getValue().equals(login)) {
@@ -93,23 +94,29 @@ public class Review {
             }
         }
     }
-        public void editReview(String review,String movie) {
+        public void editReview(String review,String rating,String movie) {
 
-            Map<Map, String> mapToReview;
+            Map<Map, List> mapToReview;
             Map<String, String> mapReviews;
             User user = new User();
+            LocalDate date = LocalDate.now();
             Movie newMovie = new Movie();
+            List<String> dateReviewRating=new ArrayList<>();
+            dateReviewRating.add(date.toString());
+            dateReviewRating.add(review);
+            dateReviewRating.add(rating);
             String imdb = newMovie.getImdb(movie);
+
             Map<String, String> mapUserLogin = user.getMapUserLogin();
 
             for (Map.Entry<Map, String> entry : mapToImdb.entrySet()) {
                 if (entry.getValue().equals(imdb)) {
                     mapToReview = entry.getKey();
-                    for (Map.Entry<Map, String> entry2 : mapToReview.entrySet()) {
+                    for (Map.Entry<Map, List> entry2 : mapToReview.entrySet()) {
                         mapReviews = entry2.getKey();
                         for (Map.Entry<String, String> entry3 : mapReviews.entrySet()) {
                             if (entry3.getValue().equals(login)) {
-                                mapToReview.replace(mapReviews,review);
+                                mapToReview.replace(mapReviews,dateReviewRating);
                                 System.out.println(mapToReview.entrySet());
                                 System.out.println(mapToImdb.entrySet());
                             }
@@ -118,23 +125,29 @@ public class Review {
                 }
             }
         }
-        public void editReviewByAdmin(String review,String movie,String login) {
+        public void editReviewByAdmin(String review,String rating,String movie,String login) {
 
-            Map<Map, String> mapToReview;
+            Map<Map, List> mapToReview;
             Map<String, String> mapReviews;
             User user = new User();
+            LocalDate date = LocalDate.now();
             Movie newMovie = new Movie();
+            List<String> dateReviewRating = new ArrayList<>();
+            dateReviewRating.add(date.toString());
+            dateReviewRating.add(review);
+            dateReviewRating.add(rating);
             String imdb = newMovie.getImdb(movie);
+
             Map<String, String> mapUserLogin = user.getMapUserLogin();
 
             for (Map.Entry<Map, String> entry : mapToImdb.entrySet()) {
                 if (entry.getValue().equals(imdb)) {
                     mapToReview = entry.getKey();
-                    for (Map.Entry<Map, String> entry2 : mapToReview.entrySet()) {
+                    for (Map.Entry<Map, List> entry2 : mapToReview.entrySet()) {
                         mapReviews = entry2.getKey();
                         for (Map.Entry<String, String> entry3 : mapReviews.entrySet()) {
                             if (entry3.getValue().equals(login)) {
-                                mapToReview.replace(mapReviews,review);
+                                mapToReview.replace(mapReviews, dateReviewRating);
                                 System.out.println(mapToReview.entrySet());
                                 System.out.println(mapToImdb.entrySet());
                             }

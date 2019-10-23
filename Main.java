@@ -21,20 +21,20 @@ public class Main {
                 "logout -- выход из аккаунта\n" +
                 "addReview -- добавить отзыв\n" +
                 "deleteReview -- удалить отзыв(для пользователей)\n" +
-                "detail -- ???????\n" +
+                "details -- показать детали фильма\n" +
                 "exit -- выход из программы\n" +
                 "editReview -- редактировать отзыв(для пользователей)\n" +
                 "deleteReviewByAdmin -- удалить отзыв(для админа) \n" +
                 "editReviewByAdmin -- редактировать отзыв(для админа):");
-        List<String> CommandList=new ArrayList<String>();
-        CommandList.add("register");
-        CommandList.add("login");
-        CommandList.add("search");
-        CommandList.add("logout");
-        CommandList.add("addreview");
-        CommandList.add("deletereview");
-        CommandList.add("detail");
-        CommandList.add("exit");
+//        List<String> CommandList=new ArrayList<String>();
+//        CommandList.add("register");
+//        CommandList.add("login");
+//        CommandList.add("search");
+//        CommandList.add("logout");
+//        CommandList.add("addReview");
+//        CommandList.add("deleteReview");
+//        CommandList.add("detail");
+//        CommandList.add("exit");
         String commands=sc.next();
         String login;
 
@@ -53,7 +53,7 @@ public class Main {
                         commands=sc.next();
                     if(commands.equals("details"))
                     {
-                        movie.getMovieDetails();
+                        Movie.getFilmInfo(commands);
                     }
                 }
 
@@ -63,13 +63,17 @@ public class Main {
 
                         System.out.println("Введите название фильма, для которого хотите отредактировать отзыв:");
                         commands=sc.next();
+                        String myReview;
+                        String myRating;
                         if(movie.searchFilmToReview(commands))
                         {
                             System.out.println("Фильм найден! Выберите пользователя, чей отзыв хотите отредактировать:");
                             login=sc.next();
                             System.out.println("Отредактируйте отзыв:");
-                            String review=sc.next();
-                            review.editReviewByAdmin(sc.next(),commands,login);
+                            myReview=sc.next();
+                            System.out.println("Дайте оценку:");
+                            myRating=sc.next();
+                            review.editReviewByAdmin(myReview,myRating,commands,login);
                         }
                     }
                     if (commands.equals("deleteReviewByAdmin")) {
@@ -106,10 +110,15 @@ public class Main {
                     if (commands.equals("editReview")) {
                             System.out.println("Введите название фильма, на который вы написали отзыв и хотите отредактировать:");
                         commands=sc.next();
+                        String myReview;
+                        String myRating;
                         if(movie.searchFilmToReview(commands))
                         {
                             System.out.println("Фильм найден! Отредактируйте отзыв:");
-                            review.editReview(sc.next(),commands);
+                            myReview=sc.next();
+                            System.out.println("Дайте оценку:");
+                            myRating=sc.next();
+                            review.editReview(myReview,myRating,commands);
                         }
                     }
                     if (commands.equals("deleteReview")) {
@@ -117,7 +126,7 @@ public class Main {
                         commands=sc.next();
                         if(movie.searchFilmToReview(commands))
                         {
-                            System.out.println("Удалите фильм:");
+                            System.out.println("Фильм найден!Обзор удалён!");
                             review.deleteReview(commands);
                         }
                     }
@@ -143,7 +152,6 @@ public class Main {
                     System.out.println("Введите пароль:");
                     String logpassword = sc.next();
                     user.LoginOldUsers(logname,loglogin,logpassword);
-                    System.out.println(User.adminMode);
                 }
             }
             commands = sc.next();

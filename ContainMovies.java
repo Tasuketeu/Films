@@ -1,5 +1,8 @@
 package com.company.base.accenture.films;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.*;
 
 public class ContainMovies {
@@ -10,8 +13,8 @@ public class ContainMovies {
     List<String> film_type=new ArrayList<>();
     List<String> title = new ArrayList<>();
     List<String> genre=new ArrayList<>();
-    List<Date> date=new ArrayList<>();
-    List<Double> rating=new ArrayList<>();
+    List<LocalDate> date=new ArrayList<>();
+    List<String> rating=new ArrayList<>();
     List<String> details=new ArrayList<>();
 
     static int movieId=0;
@@ -30,17 +33,17 @@ public class ContainMovies {
         genre.add("Ужасы");
         genre.add("Боевик");
 
-        date.add(new Date(1212121212121L));
-        date.add(new Date(1212121212121L));
-        date.add(new Date(1212121212121L));
-        date.add(new Date(1212121212121L));
-        date.add(new Date(1212121212121L));
+        date.add(LocalDate.of(1999, Month.JULY, 9));
+        date.add(LocalDate.of(2017, Month.JULY, 9));
+        date.add(LocalDate.of(2019, Month.JULY, 9));
+        date.add(LocalDate.of(1973, Month.JULY, 9));
+        date.add(LocalDate.of(1975, Month.JULY, 9));
 
-        rating.add(10.0);
-        rating.add(10.0);
-        rating.add(10.0);
-        rating.add(10.0);
-        rating.add(10.0);
+        rating.add("10.0");
+        rating.add("10.0");
+        rating.add("10.0");
+        rating.add("10.0");
+        rating.add("10.0");
 
         details.add("Фильм");
         details.add("Фильм");
@@ -54,7 +57,7 @@ public class ContainMovies {
             map.put(2+movieId,title.get(i));
             map.put(3+movieId,genre.get(i));
             map.put(4+movieId,date.get(i).toString());
-            map.put(5+movieId,Double.toString(rating.get(i)));
+            map.put(5+movieId,rating.get(i));
             map.put(6+movieId,details.get(i));
             movieId+=7;
         }

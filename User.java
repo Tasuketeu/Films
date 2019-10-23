@@ -64,7 +64,7 @@ public class User {
                             )
                             {
                                 System.out.println("Вы вошли в систему!");
-                                review.setActiveUser(i);
+                                Review.setActiveUser(i);
                                 InSystem();
                                 return;
                             }
