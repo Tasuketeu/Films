@@ -1,75 +1,128 @@
 package com.company.base.accenture.films;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class ContainMovies {
-    static List moviesList=new ArrayList<User>();
-    Map<String,String> movies= new LinkedHashMap<>();
-    static Map<Integer, String> map = new LinkedHashMap<>();
-    List<String> imdb=new ArrayList<>();
-    List<String> film_type=new ArrayList<>();
-    List<String> title = new ArrayList<>();
-    List<String> genre=new ArrayList<>();
-    List<LocalDate> date=new ArrayList<>();
-    List<String> rating=new ArrayList<>();
-    List<String> details=new ArrayList<>();
+public class ContainMovies  {
 
-    static int movieId=0;
+    static List<Movie> moviesList=new ArrayList<>();
+    static List<Review> reviewsList=new ArrayList<>();
+    static String searchResult="";
+    static boolean details=false;
 
-    public Map mapMovies() {
-        imdb.add("0133093"); film_type.add("Фильм"); title.add("Матрица");
-        imdb.add("0088763"); film_type.add("Фильм"); title.add("Начало");
-        imdb.add("0068646"); film_type.add("Фильм"); title.add("Интерстеллар");
-        imdb.add("0078748"); film_type.add("Фильм"); title.add("Чужой");
-        imdb.add("0088247"); film_type.add("Фильм"); title.add("Терминатор");
+    static Pattern pattern;
+    static Matcher imdbMatcher;
+    static Matcher titleMatcher;
+    static Matcher yearMatcher;
 
 
-        genre.add("Боевик, киберпанк");
-        genre.add("Научная фантастика");
-        genre.add("Научная фантастика");
-        genre.add("Ужасы");
-        genre.add("Боевик");
+    static String activeUser=null;
 
-        date.add(LocalDate.of(1999, Month.JULY, 9));
-        date.add(LocalDate.of(2017, Month.JULY, 9));
-        date.add(LocalDate.of(2019, Month.JULY, 9));
-        date.add(LocalDate.of(1973, Month.JULY, 9));
-        date.add(LocalDate.of(1975, Month.JULY, 9));
+    public static void getMoviesFromCSV(String uri) throws java.io.IOException{
+            List<String> lines = Files.readAllLines(Paths.get(uri), StandardCharsets.UTF_8);
+            for (String line : lines) {
+                String[] temp=line.split(";");
+                    moviesList.add(new Movie(temp[0],temp[1],temp[2],temp[3],temp[4],temp[5],temp[6]));
+            }
 
-        rating.add("10.0");
-        rating.add("10.0");
-        rating.add("10.0");
-        rating.add("10.0");
-        rating.add("10.0");
+            Collections.sort(moviesList);
+    }
 
-        details.add("Фильм");
-        details.add("Фильм");
-        details.add("Фильм");  //заполнить
-        details.add("Фильм");
-        details.add("Фильм");
 
-        for (int i=0;i<5;i++) {
-            map.put(0+movieId,imdb.get(i));
-            map.put(1+movieId,film_type.get(i));
-            map.put(2+movieId,title.get(i));
-            map.put(3+movieId,genre.get(i));
-            map.put(4+movieId,date.get(i).toString());
-            map.put(5+movieId,rating.get(i));
-            map.put(6+movieId,details.get(i));
-            movieId+=7;
+
+    public static boolean searchFilm(String search) {
+
+        pattern = Pattern.compile(searchResult.toLowerCase() + ".++"); //{search}.++  greedy matching
+        for (int i = 0; i < moviesList.size(); i++) {
+
+            imdbMatcher = pattern.matcher(moviesList.get(i).imdb);
+            titleMatcher = pattern.matcher(moviesList.get(i).title.toLowerCase());
+            yearMatcher = pattern.matcher(moviesList.get(i).dateVars[0]);
+
+            if (imdbMatcher.matches() || titleMatcher.matches() || yearMatcher.matches()) {
+                return true;
+            }
         }
-        return map;
+        return false;
     }
 
-    public Map moviesList()
-    {
-        return movies;
+
+    public static void getFilmInfo(String search) {
+
+        if (!(search.equals("details"))) {
+            searchResult = search;
+        } else {
+            details = true;
+        }
+        pattern = Pattern.compile(searchResult.toLowerCase() + ".++"); //{search}.++  greedy matching
+                for(int i=0;i<moviesList.size();i++) {
+
+                    imdbMatcher=pattern.matcher(moviesList.get(i).imdb);
+                    titleMatcher=pattern.matcher(moviesList.get(i).title.toLowerCase());
+                    yearMatcher=pattern.matcher(moviesList.get(i).dateVars[0]);
+
+                    if (imdbMatcher.matches() || titleMatcher.matches() || yearMatcher.matches()) {
+                        if (!details) {
+                            System.out.println("Фильм найден");
+                            System.out.println(moviesList.get(i).filmType); //film type
+                            System.out.println(moviesList.get(i).title); //title
+                            System.out.println(moviesList.get(i).genre); //genre
+                            System.out.println("\n");
+                        } else {
+                            System.out.println(moviesList.get(i).imdb); //imdb
+                            System.out.println(moviesList.get(i).date); //date
+                            System.out.println(moviesList.get(i).rating); //rating
+                            System.out.println(moviesList.get(i).description); //movie description
+                            if (!reviewsList.isEmpty()) {
+
+                                    System.out.println("\n");
+
+                                    System.out.println(reviewsList.get(i).date); //date
+
+                                    System.out.println(reviewsList.get(i).login); //login
+                                    System.out.println(reviewsList.get(i).review); //review
+
+                                    System.out.println(reviewsList.get(i).rating); //rating
+
+                                    System.out.println("\n");
+                                return;
+                            }
+                        }
+                    }
+                }
+            details = false;
     }
 
-    public List getMoviesList(){
-        return moviesList;
+
+
+    public static void setActiveUser(String activeUser) {
+        ContainMovies.activeUser=activeUser;
     }
+
+    public void addReview(String imdb,String review,String rating) {
+        LocalDate date = LocalDate.now();
+        reviewsList.add(new Review(imdb,review,rating,activeUser,date));
+    }
+
+    public void editReview(String imdb,String review,String rating) {
+
+        LocalDate date = LocalDate.now();
+
+                reviewsList.set(3,new Review(imdb,review,rating,activeUser,date));
+                System.out.println(reviewsList);
+        }
+
+    public void deleteReview(String imdb) {
+
+
+        reviewsList.remove(3);
+                System.out.println(reviewsList);
+                return;
+    }
+
 }
