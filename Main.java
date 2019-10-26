@@ -22,7 +22,6 @@ public class Main {
                 "login -- логин\n" +
                 "logout -- выход из аккаунта\n" +
                 "search -- поиск фильма\n" +
-                "details -- показать детали фильма\n" +
                 "addReview -- добавить отзыв\n" +
                 "editReview -- редактировать отзыв(для пользователей и админов)\n"+
                 "deleteReview -- удалить отзыв(для пользователей и админов)\n" +
@@ -33,6 +32,7 @@ public class Main {
 
         while (!(commands.equals("exit"))) {
             if (ContainUsers.inSystem) {
+
                 if (commands.equals("logout")) {
                     ContainUsers.inSystem=false;
                     if(ContainUsers.adminMode){
@@ -40,28 +40,30 @@ public class Main {
                     }
                     System.out.println("Вы не в системе");
                 }
+
                 if (commands.equals("search")) {
                         System.out.println("Поиск фильмов:");
-                        ContainMovies.getFilmInfo(sc.next());
+                        containMovies.getFilmInfo(sc.next());
+                        System.out.println("Введите imdb идентификатор, чтобы получить детали фильма:");
                         commands=sc.next();
-                    if(commands.equals("details"))
-                    {
-                        ContainMovies.getFilmInfo(commands);
-                    }
+                        containMovies.getFilmInfo(commands);
                 }
 
                     if (commands.equals("addReview")) {
-                        System.out.println("Введите название фильма, на который хотите написать обзор:");
+                        System.out.println("Введите imdb фильма, на который хотите написать обзор:");
                         commands=sc.next();
                         String myReview;
                         String myRating;
-                        if(ContainMovies.searchFilm(commands))
+                        if(ContainMovies.searchFilmToReview(commands))
                         {
                             System.out.println("Фильм найден! Напишите отзыв:");
                             myReview=sc.next();
                             System.out.println("Дайте оценку:");
                             myRating=sc.next();
                             containMovies.addReview(commands,myReview,myRating);
+                        }
+                        else{
+                            System.out.println("Некорректный imdb!");
                         }
                     }
 
@@ -71,24 +73,28 @@ public class Main {
 
                     if (commands.equals("editReview")) {
                         if(!ContainUsers.adminMode) {
-                            System.out.println("Введите название фильма, на который вы написали отзыв и хотите отредактировать:");
+                            System.out.println("Введите imdb фильма, на который вы написали отзыв и хотите отредактировать:");
                             commands = sc.next();
                             String myReview;
                             String myRating;
-                            if (ContainMovies.searchFilm(commands)) {
+                            if (ContainMovies.searchFilmToReview(commands)) {
                                 System.out.println("Фильм найден! Отредактируйте отзыв:");
                                 myReview = sc.next();
                                 System.out.println("Дайте оценку:");
                                 myRating = sc.next();
                                 containMovies.editReview(commands,myReview,myRating);
+                                System.out.println("Обзор изменён!");
+                            }
+                            else{
+                                System.out.println("Некорректный imdb!");
                             }
                         }
                         else {
-                            System.out.println("Введите название фильма, для которого хотите отредактировать отзыв:");
+                            System.out.println("Введите imdb фильма, для которого хотите отредактировать отзыв:");
                             commands=sc.next();
                             String myReview;
                             String myRating;
-                            if(ContainMovies.searchFilm(commands))
+                            if(ContainMovies.searchFilmToReview(commands))
                             {
                                 System.out.println("Фильм найден! Выберите пользователя, чей отзыв хотите отредактировать:");
                                 login=sc.next();
@@ -96,27 +102,39 @@ public class Main {
                                 myReview=sc.next();
                                 System.out.println("Дайте оценку:");
                                 myRating=sc.next();
-                                containMovies.editReview(commands,myReview,myRating);
+                                containMovies.editReview(commands,myReview,myRating,login);
+                                System.out.println("Обзор изменён!");
+                            }
+                            else{
+                                System.out.println("Некорректный imdb!");
                             }
                         }
                     }
 
                     if (commands.equals("deleteReview")) {
                         if(!ContainUsers.adminMode) {
-                            System.out.println("Введите название фильма, на который вы написали отзыв и хотите удалить:");
+                            System.out.println("Введите imdb фильма, на который вы написали отзыв и хотите удалить:");
                             commands = sc.next();
-                            if (ContainMovies.searchFilm(commands)) {
-                                System.out.println("Фильм найден!Обзор удалён!");
+                            if (ContainMovies.searchFilmToReview(commands)) {
                                 containMovies.deleteReview(commands);
+
+                                System.out.println("Фильм найден!Обзор удалён!");
+                            }
+                            else{
+                                System.out.println("Некорректный imdb!");
                             }
                         }
                         else {
-                            System.out.println("Введите название фильма, для которого хотите удалить отзыв:");
+                            System.out.println("Введите imdb фильма, для которого хотите удалить отзыв:");
                             commands = sc.next();
-                            if (ContainMovies.searchFilm(commands)) {
+                            if (ContainMovies.searchFilmToReview(commands)) {
                                 System.out.println("Фильм найден! Выберите пользователя, чей отзыв хотите удалить:");
                                 login = sc.next();
-                                containMovies.deleteReview(commands);
+                                containMovies.deleteReview(commands,login);
+                                System.out.println("Фильм найден!Обзор удалён!");
+                            }
+                            else{
+                                System.out.println("Некорректный imdb!");
                             }
                         }
                     }
@@ -151,4 +169,6 @@ public class Main {
         }
 
     }
+
+
 }

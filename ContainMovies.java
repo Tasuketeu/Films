@@ -8,18 +8,17 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ContainMovies  {
+public class ContainMovies implements Runnable  {
 
     static List<Movie> moviesList=new ArrayList<>();
     static List<Review> reviewsList=new ArrayList<>();
     static String searchResult="";
-    static boolean details=false;
 
     static Pattern pattern;
-    static Matcher imdbMatcher;
     static Matcher titleMatcher;
     static Matcher yearMatcher;
-
+    static boolean wroteReview=false;
+    static boolean ended=false;
 
     static String activeUser=null;
 
@@ -35,16 +34,11 @@ public class ContainMovies  {
 
 
 
-    public static boolean searchFilm(String search) {
-
-        pattern = Pattern.compile(searchResult.toLowerCase() + ".++"); //{search}.++  greedy matching
+    public static boolean searchFilmToReview(String search) {
+        searchResult=search;
         for (int i = 0; i < moviesList.size(); i++) {
 
-            imdbMatcher = pattern.matcher(moviesList.get(i).imdb);
-            titleMatcher = pattern.matcher(moviesList.get(i).title.toLowerCase());
-            yearMatcher = pattern.matcher(moviesList.get(i).dateVars[0]);
-
-            if (imdbMatcher.matches() || titleMatcher.matches() || yearMatcher.matches()) {
+            if (searchResult.equals(moviesList.get(i).imdb)) {
                 return true;
             }
         }
@@ -52,50 +46,59 @@ public class ContainMovies  {
     }
 
 
-    public static void getFilmInfo(String search) {
+    public void getFilmInfo(String search) {
 
-        if (!(search.equals("details"))) {
             searchResult = search;
-        } else {
-            details = true;
-        }
+
         pattern = Pattern.compile(searchResult.toLowerCase() + ".++"); //{search}.++  greedy matching
+
+        new Thread(this).start();
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+        ended=true;
                 for(int i=0;i<moviesList.size();i++) {
 
-                    imdbMatcher=pattern.matcher(moviesList.get(i).imdb);
                     titleMatcher=pattern.matcher(moviesList.get(i).title.toLowerCase());
                     yearMatcher=pattern.matcher(moviesList.get(i).dateVars[0]);
 
-                    if (imdbMatcher.matches() || titleMatcher.matches() || yearMatcher.matches()) {
-                        if (!details) {
+                    if (searchResult.equals(moviesList.get(i).imdb) || titleMatcher.matches() || yearMatcher.matches()
+                    || searchResult.toLowerCase().equals(moviesList.get(i).title.toLowerCase()) ||searchResult.equals(moviesList.get(i).dateVars[0]))
+
+                    {
+
                             System.out.println("Фильм найден");
                             System.out.println(moviesList.get(i).filmType); //film type
                             System.out.println(moviesList.get(i).title); //title
                             System.out.println(moviesList.get(i).genre); //genre
-                            System.out.println("\n");
-                        } else {
                             System.out.println(moviesList.get(i).imdb); //imdb
-                            System.out.println(moviesList.get(i).date); //date
                             System.out.println(moviesList.get(i).rating); //rating
+
+                            System.out.println("\n");
+
+
+                        if(searchResult.equals(moviesList.get(i).imdb)) {
+
+                            System.out.println(moviesList.get(i).date); //date
                             System.out.println(moviesList.get(i).description); //movie description
                             if (!reviewsList.isEmpty()) {
+                                for(int j=0;j<reviewsList.size();j++) {
 
-                                    System.out.println("\n");
+                                        System.out.println(reviewsList.get(j).date); //date
 
-                                    System.out.println(reviewsList.get(i).date); //date
+                                        System.out.println(reviewsList.get(j).login); //login
+                                        System.out.println(reviewsList.get(j).review); //review
 
-                                    System.out.println(reviewsList.get(i).login); //login
-                                    System.out.println(reviewsList.get(i).review); //review
+                                        System.out.println(reviewsList.get(j).rating); //rating
 
-                                    System.out.println(reviewsList.get(i).rating); //rating
-
-                                    System.out.println("\n");
-                                return;
+                                        System.out.println("\n");
+                                }
                             }
                         }
                     }
                 }
-            details = false;
     }
 
 
@@ -106,23 +109,82 @@ public class ContainMovies  {
 
     public void addReview(String imdb,String review,String rating) {
         LocalDate date = LocalDate.now();
-        reviewsList.add(new Review(imdb,review,rating,activeUser,date));
+
+        for(int i=0;i<reviewsList.size();i++) {
+            if (activeUser.equals(reviewsList.get(i).login)) {
+                wroteReview=true;
+                System.out.println("Вы уже написали обзор!");
+            }
+        }
+
+        if(!wroteReview) {
+            reviewsList.add(new Review(imdb, review, rating, activeUser, date));
+            System.out.println("Обзор добавлен!");
+        }
+
+        wroteReview=false;
+
     }
 
     public void editReview(String imdb,String review,String rating) {
 
         LocalDate date = LocalDate.now();
 
-                reviewsList.set(3,new Review(imdb,review,rating,activeUser,date));
-                System.out.println(reviewsList);
+                    for (int i = 0; i < reviewsList.size(); i++) {
+                        if (activeUser.equals(reviewsList.get(i).login) && imdb.equals(reviewsList.get(i).imdb)) {
+                            reviewsList.set(i, new Review(imdb, review, rating, activeUser, date));
+                            return;
+                        }
+                    }
+        }
+
+        public void editReview(String imdb,String review,String rating,String login) {
+
+        LocalDate date = LocalDate.now();
+
+                    for (int i = 0; i < reviewsList.size(); i++) {
+                        if (login.equals(reviewsList.get(i).login) && imdb.equals(reviewsList.get(i).imdb)) {
+                            reviewsList.set(i, new Review(imdb, review, rating, login, date));
+                            return;
+                        }
+                    }
         }
 
     public void deleteReview(String imdb) {
 
-
-        reviewsList.remove(3);
-                System.out.println(reviewsList);
+        for (int i = 0; i < reviewsList.size(); i++) {
+            if (activeUser.equals(reviewsList.get(i).login) && imdb.equals(reviewsList.get(i).imdb)) {
+                reviewsList.remove(i);
                 return;
+            }
+        }
+    }
+        public void deleteReview(String imdb,String login){
+
+            for (int i = 0; i < reviewsList.size(); i++) {
+                if (login.equals(reviewsList.get(i).login) && imdb.equals(reviewsList.get(i).imdb)) {
+                    reviewsList.remove(i);
+                    return;
+                }
+            }
+        }
+
+    @Override
+    public void run() {
+        String temp = "";
+        while(!ended) {
+            temp += ".";
+            if (temp.length() == 6) {
+                temp = ".";
+            }
+            System.out.println("Пожалуйста, подождите, выполняется поиск" + temp);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-}
+    }
+
